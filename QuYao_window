@@ -188,3 +188,183 @@ public class quyao_window extends JDialog {
 	 * 	
 	 * @return javax.swing.JScrollPane	
 	 */
+private JScrollPane getJScrollPane1() {
+		if (jScrollPane1 == null) {
+			jScrollPane1 = new JScrollPane();
+			jScrollPane1.setBounds(new Rectangle(301, 182, 353, 177));
+			jScrollPane1.setViewportView(getJChufang_Info());
+		}
+		return jScrollPane1;
+	}
+
+	/**
+	 * This method initializes jpatientInfo	
+	 * 	
+	 * @return javax.swing.JTable	
+	 */
+	private JTable getJpatientInfo() {
+		if (jpatientInfo == null) {
+			jpatientInfo = new JTable();
+			tablemodel_J = new DefaultTableModel();
+			tablemodel_J.addColumn("处方单编号");
+			tablemodel_J.addColumn("病历号");
+			jpatientInfo.setModel(tablemodel_J);
+			jpatientInfo.setSelectionBackground(Color.green);
+			jpatientInfo.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+			jpatientInfo.addMouseListener(new java.awt.event.MouseAdapter() {
+				public void mouseClicked(java.awt.event.MouseEvent e) {
+					if(e.getButton() == MouseEvent.BUTTON1){
+						//获取对应病历号的患者姓名
+						int row = jpatientInfo.getSelectedRow();
+						jcno.setText(String.valueOf(tablemodel_J.getValueAt(row, 0)).trim());
+						String sql = "select 姓名 from 病人信息表 where 病历号 = '"+tablemodel_J.getValueAt(row, 1)+"'";
+						linkDataBase link = new linkDataBase(main_Frame.getdataName(3),main_Frame.getdataPassword(3));
+						ResultSet rs = link.getResultSet(sql);
+						try{
+							if(rs.next()){
+								jpatientName.setText(rs.getString(1).trim());
+							}
+						}catch(SQLException e3){
+							System.out.println("获取患者姓名失败："+e3.toString());
+						}
+						setQingDan_Info(jcno.getText().trim());
+					}else if(e.getButton() == MouseEvent.BUTTON3){
+						getPopupMenu().show(e.getComponent(),e.getX(),e.getY());
+					}
+				}
+			});
+		}
+		return jpatientInfo;
+	}
+
+	/**
+	 * This method initializes jChufang_Info	
+	 * 	
+	 * @return javax.swing.JTable	
+	 */
+	private JTable getJChufang_Info() {
+		if (jChufang_Info == null) {
+			jChufang_Info = new JTable();
+			tablemodel_Q = new DefaultTableModel();
+			tablemodel_Q.addColumn("药品编号");
+			tablemodel_Q.addColumn("药品名称");
+			tablemodel_Q.addColumn("药品数量");
+			jChufang_Info.setModel(tablemodel_Q);
+			jChufang_Info.setSelectionBackground(Color.green);
+		}
+		return jChufang_Info;
+	}
+
+	/**
+	 * This method initializes jButton	
+	 * 	
+	 * @return javax.swing.JButton	
+	 */
+	private JButton getJButton() {
+		if (jButton == null) {
+			jButton = new JButton();
+			jButton.setBounds(new Rectangle(110, 376, 84, 28));
+			jButton.setFont(new Font("Dialog", Font.BOLD, 14));
+			jButton.setText("取药");
+			jButton.addActionListener(new java.awt.event.ActionListener() {
+				public void actionPerformed(java.awt.event.ActionEvent e) {
+					updateJZhen_Info();
+					tablemodel_J.removeRow(jpatientInfo.getSelectedRow());
+					tablemodel_Q.setRowCount(0);
+				}
+			});
+		}
+		return jButton;
+	}
+
+	/**
+	 * This method initializes jButton1	
+	 * 	
+	 * @return javax.swing.JButton	
+	 */
+	private JButton getJButton1() {
+		if (jButton1 == null) {
+			jButton1 = new JButton();
+			jButton1.setBounds(new Rectangle(460, 376, 90, 30));
+			jButton1.setFont(new Font("Dialog", Font.BOLD, 14));
+			jButton1.setText("退出");
+			jButton1.addActionListener(new java.awt.event.ActionListener() {
+				public void actionPerformed(java.awt.event.ActionEvent e) {
+					dispose();
+				}
+			});
+		}
+		return jButton1;
+	}
+	
+	//获取病人已经交费但没有取药的情况
+	private void setPatientInfo(){
+		String sql = "select 处方单编号, 病历号 from 就诊信息表 where 取药员号 is Null and 收费员号 is not Null"	;
+		linkDataBase link = new linkDataBase(main_Frame.getdataName(3),main_Frame.getdataPassword(3));
+		tablemodel_J.setRowCount(0);
+		try{
+			PreparedStatement pstmt = link.getconnection().prepareStatement(sql);
+			ResultSet rs = pstmt.executeQuery();
+			while(rs.next()){
+				Vector<String> vc = new Vector<String>();
+				vc.add(rs.getString(1).trim());
+				vc.add(rs.getString(2));
+				tablemodel_J.addRow(vc);
+			}
+		}catch(SQLException e){
+			System.out.println("获取信息失败！"+e.toString());
+		}
+	}
+	
+	
+	//获取对应处方单编号的清单信息
+	private void setQingDan_Info(String cno){
+		linkDataBase link = new linkDataBase(main_Frame.getdataName(3),main_Frame.getdataPassword(3));
+		Connection conn = link.getconnection();
+		tablemodel_Q.setRowCount(0);
+		try{
+			CallableStatement cstmt = conn.prepareCall("{call cList_info(?)}");
+			cstmt.setString(1, cno);
+			ResultSet rs = cstmt.executeQuery();
+			while(rs.next()){
+				Vector<String> vc = new Vector<String>();
+				vc.add(rs.getString(1).trim());
+				vc.add(rs.getString(2).trim());
+				vc.add(rs.getString(3).trim());
+				tablemodel_Q.addRow(vc);
+			}
+			rs.close();
+			cstmt.close();
+			conn.close();
+			}catch(SQLException e){
+				System.out.println(e.toString());
+				System.out.println("调用存储过程失败！");
+			}
+		}
+	
+	//弹出式刷新菜单
+	private JPopupMenu getPopupMenu(){
+		JPopupMenu popmenu = new JPopupMenu();
+		popmenu.add(Item);
+		return popmenu;
+	}
+	
+//	更新就诊信息表，加入取药员编号
+	private void updateJZhen_Info(){
+		String sql = "update 就诊信息表 set 取药员号 = (?) where 处方单编号 = (?)";
+		linkDataBase link = new linkDataBase(main_Frame.getdataName(3),main_Frame.getdataPassword(3));
+		Connection conn = link.getconnection();
+		try{
+			PreparedStatement pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, jQno.getText().trim());
+			pstmt.setString(2, jcno.getText().trim());
+			pstmt.executeUpdate();
+			JOptionPane.showMessageDialog(null,"完成取药！","提示！",JOptionPane.INFORMATION_MESSAGE);
+			pstmt.close();
+			conn.close();
+		}catch(SQLException e){
+			JOptionPane.showMessageDialog(null,"交款失败，请重新交款！","提示！",JOptionPane.INFORMATION_MESSAGE);
+			System.out.println("更新就诊信息表失败:"+e.toString());
+		}
+	}
+}  
