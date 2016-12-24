@@ -62,7 +62,7 @@ public class quyao_window extends JDialog {
 	
 	private DefaultTableModel tablemodel_Q;
 	
-	private JMenuItem Item = new JMenuItem("Ë¢ĞÂ");
+	private JMenuItem Item = new JMenuItem("åˆ·æ–°");
 
 	/**
 	 * @param owner
@@ -85,7 +85,7 @@ public class quyao_window extends JDialog {
 		});
 		this.setSize(671, 461);
 		this.setResizable(false);
-		this.setTitle("È¡Ò©´¦");
+		this.setTitle("å–è¯å¤„");
 		this.setContentPane(getJContentPane());
 		this.addWindowListener(new java.awt.event.WindowAdapter() {
 			public void windowOpened(java.awt.event.WindowEvent e) {
@@ -103,31 +103,31 @@ public class quyao_window extends JDialog {
 		if (jContentPane == null) {
 			jLabel5 = new JLabel();
 			jLabel5.setBounds(new Rectangle(301, 158, 70, 23));
-			jLabel5.setText("Çåµ¥Çé¿ö£º");
+			jLabel5.setText("æ¸…å•æƒ…å†µï¼š");
 			jLabel4 = new JLabel();
 			jLabel4.setBounds(new Rectangle(19, 159, 68, 24));
-			jLabel4.setText("½»·ÑÇé¿ö£º");
+			jLabel4.setText("äº¤è´¹æƒ…å†µï¼š");
 			jLabel2 = new JLabel();
 			jLabel2.setBounds(new Rectangle(504, 122, 42, 24));
-			jLabel2.setText("ĞÕÃû£º");
+			jLabel2.setText("å§“åï¼š");
 			jcno = new JLabel();
 			jcno.setBounds(new Rectangle(382, 123, 120, 23));
-			jcno.setText("±àºÅ");
+			jcno.setText("ç¼–å·");
 			jcno.setForeground(Color.red);
 			jLabel3 = new JLabel();
 			jLabel3.setBounds(new Rectangle(302, 122, 81, 24));
-			jLabel3.setText("´¦·½µ¥±àºÅ£º");
+			jLabel3.setText("å¤„æ–¹å•ç¼–å·ï¼š");
 			jQno = new JLabel();
 			jQno.setBounds(new Rectangle(89, 121, 136, 26));
 			jQno.setText(dialog.getuserName());
 			jQno.setForeground(Color.red);
 			jLabel1 = new JLabel();
 			jLabel1.setBounds(new Rectangle(31, 121, 56, 25));
-			jLabel1.setText("¹¤×÷ºÅ£º");
+			jLabel1.setText("å·¥ä½œå·ï¼š");
 			jLabel = new JLabel();
 			jLabel.setBounds(new Rectangle(197, 27, 254, 57));
 			jLabel.setFont(new Font("Dialog", Font.BOLD, 36));
-			jLabel.setText("²¡   ÈË   È¡   Ò©");
+			jLabel.setText("ç—…   äºº   å–   è¯");
 			jLabel.setForeground(Color.red);
 			jContentPane = new JPanel();
 			jContentPane.setLayout(null);
