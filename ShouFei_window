@@ -1,0 +1,56 @@
+import javax.swing.JPanel;
+import java.awt.Color;
+import javax.swing.JLabel;
+import java.awt.Rectangle;
+import java.awt.Font;
+import java.awt.event.MouseEvent;
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Vector;
+
+import javax.swing.JDialog;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JPopupMenu;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JButton;
+import javax.swing.ListSelectionModel;
+import javax.swing.JTable.PrintMode;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.JTextField;
+
+public class shoufei_Window extends JDialog {
+
+	private static final long serialVersionUID = 1L;
+	private JPanel jPanel = null;
+	private JLabel jLabel = null;
+	private JLabel jLabel1 = null;
+	private JLabel jsno = null;
+	private JLabel jLabel2 = null;
+	private JLabel jLabel3 = null;
+	private JLabel jcno = null;
+	private JLabel jLabel4 = null;
+	private JScrollPane jScrollPane = null;
+	private JScrollPane jScrollPane1 = null;
+	private JButton jExit = null;
+	private JButton jOK = null;
+	private JTable jzhen_Info = null;
+	private JTable jqingdan_Info = null;
+	private DefaultTableModel tableModel_J;	//就诊信息表模式
+	private DefaultTableModel tableModel_Q;	//清单信息表模式
+	private JMenuItem Item = new JMenuItem("刷新");
+	private JLabel jLabel5 = null;
+	private JTextField jcount = null;
+	private JLabel jpname = null;
+	private JTextField jpatientName = null;
+	private JButton jButton = null;
+	private DateFormat dateformat = new SimpleDateFormat("yyyyMMdd");  //  @jve:decl-index=0:
+	private Calendar clr = Calendar.getInstance();  //  @jve:decl-index=0:
+	private JButton jButton1 = null;
