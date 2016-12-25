@@ -57,4 +57,15 @@ public class linkDataBase {
 		}
 		return rs;	
 	}
+	
+	public void ExecuteQuery(String sql){
+	 try {
+		stmt = getconnection().createStatement();
+		stmt.execute(sql);
+	} catch (SQLException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+	}
+	
 }
