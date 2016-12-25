@@ -58,7 +58,7 @@ public class dialog extends JDialog {
 	private void initialize() {
 		this.setSize(441, 316);
 		this.setModal(true);
-		this.setTitle("Ա����¼");
+		this.setTitle("员工登录");
 		this.setResizable(false);
 		this.setContentPane(getJContentPane());
 	}
@@ -88,12 +88,12 @@ public class dialog extends JDialog {
 		if (jPanel == null) {
 			jLabel2 = new JLabel();
 			jLabel2.setBounds(new Rectangle(61, 151, 43, 24));
-			jLabel2.setText("���룺");
+			jLabel2.setText("密码：");
 			jLabel1 = new JLabel();
 			jLabel1.setBounds(new Rectangle(52, 110, 53, 24));
-			jLabel1.setText("�û�����");
+			jLabel1.setText("用户名：");
 			jLabel = new JLabel();
-			jLabel.setText("��ӭԱ����¼     ף���������");
+			jLabel.setText("欢迎员工登录     祝您工作愉快");
 			jLabel.setFont(new Font("Dialog", Font.BOLD | Font.ITALIC, 26));
 			jLabel.setForeground(new Color(252, 5, 5));
 			jLabel.setBounds(new Rectangle(33, 22, 372, 38));
@@ -145,3 +145,96 @@ public class dialog extends JDialog {
 	
 
 }  
+private JButton getJOK() {
+		if (jOK == null) {
+			jOK = new JButton();
+			jOK.setBounds(new Rectangle(62, 200, 71, 26));
+			jOK.setText("登录");
+			jOK.addActionListener(new java.awt.event.ActionListener() {
+				public void actionPerformed(java.awt.event.ActionEvent e) {
+					//员工登陆
+					int index = 0;			//标记登陆数据位置，获取相应用户名和密码
+					if(main_Frame.getUserType().equals("挂号处")){
+						index = 0;
+					}
+					else if(main_Frame.getUserType().equals("科")){
+						index = 1;
+					}
+					else if(main_Frame.getUserType().equals("收费处")){
+						index = 2;
+					}
+					else if(main_Frame.getUserType().equals("取药处")){
+						index = 3;
+					}
+					System.out.println(main_Frame.getdataName(index));
+					//获取登陆数据库的用户名和密码
+					String DBuser = main_Frame.getdataName(index);
+					String DBpassword = main_Frame.getdataPassword(index);
+					
+					//获取登陆用户的用户名和密码
+					userName = juserName.getText();
+					userPassword = jPassword.getText();
+					System.out.println("cai dao zhe");
+					String sql = "select * from 医务人员表 where 工作号 = '"+userName+"' and 密码 ='"+userPassword
+								+"' and 科室 like '%"+main_Frame.getUserType()+"'";
+					linkDataBase link = new linkDataBase(DBuser,DBpassword);	//,userName,userPassword);
+			try{	
+					ResultSet rs = link.getResultSet(sql);
+					if(!rs.next()){
+					JOptionPane.showMessageDialog(null,"你输入用户名和密码不正确，请重新输入用户名和密码!","提示",JOptionPane.WARNING_MESSAGE);
+					jPassword.setText("");
+					System.out.println("你的用户名和密码不正确，请重新输入用户名和密码");
+				}else if(main_Frame.getUserType().equals("科")){			//医生登陆
+					System.out.println("医生登陆成功！");
+					dispose();
+					jiuzhen_Window J_Window = new jiuzhen_Window();
+					J_Window.setLocationRelativeTo(null);
+					J_Window.setVisible(true);
+				}else if(main_Frame.getUserType().equals("挂号处")){		//挂号员登陆
+					if(main_Frame.getg_Statue()){
+					main_Frame.setg_Statue(false);
+					dispose();
+					System.out.println("登陆成功！");
+					guahao g_Window = new guahao();
+					g_Window.setLocationRelativeTo(null);
+					g_Window.setVisible(true);
+				}else{
+					JOptionPane.showMessageDialog(null,"已经有挂号员登陆!","警告!",JOptionPane.WARNING_MESSAGE);
+					dispose();
+					}	
+				}else if(main_Frame.getUserType().equals("收费处")){		//收费员登陆
+					if(main_Frame.gets_Statue()){
+						System.out.println("收费员登陆");
+						main_Frame.sets_Statue(false);
+						dispose();
+						shoufei_Window S_Window = new shoufei_Window();
+						S_Window.setLocationRelativeTo(null);
+						S_Window.setVisible(true);
+					}else{
+						JOptionPane.showMessageDialog(null, "已经有收费员登陆！", "警告！", JOptionPane.WARNING_MESSAGE);
+						dispose();
+					}
+					
+				}else if(main_Frame.getUserType().equals("取药处")){
+					System.out.println("取药员登陆");
+					quyao_window Q_Window = new quyao_window(null);
+					Q_Window.setLocationRelativeTo(null);
+					Q_Window.setVisible(true);
+					dispose();
+				}
+					rs.close();
+					link.getconnection().close();
+			}catch(SQLException ee){
+				System.out.println("登陆时出错："+ee);
+			}
+				}
+			});
+		}
+		return jOK;
+	}
+
+	/**
+	 * This method initializes jUndo	
+	 * 	
+	 * @return javax.swing.JButton	
+	 */
