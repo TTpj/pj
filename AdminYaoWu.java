@@ -28,9 +28,11 @@ public class AdminYaoWu extends JDialog {
 	private JPanel panel_1;
 	private JPanel panel_2;
 	private JComboBox comboBox;
+	private JComboBox comboBox_1;
 	private JButton btnNewButton_7;
 	private JButton btnNewButton_6;
 	private String a;
+	private String a_1;
 	private JLabel lblNewLabel;
 	private JTextField textField;
 	private JTextField textField_1;
@@ -89,6 +91,14 @@ public class AdminYaoWu extends JDialog {
 					panel_2.setVisible(true);
 					btnNewButton_7.setVisible(false);
 					btnNewButton_6.setVisible(true);
+					textField_6.setEditable(false);
+					textField_7.setEditable(false);
+					textField_8.setEditable(false);
+					textField_9.setEditable(false);
+					textField_10.setEditable(false);
+					textField_11.setEditable(false);
+					textField_10.setVisible(true);
+					comboBox_1.setVisible(false);
 				}
 			});
 			btnNewButton_1.setBounds(221, 0, 121, 23);
@@ -100,7 +110,15 @@ public class AdminYaoWu extends JDialog {
 					panel_2.setVisible(true);
 					btnNewButton_7.setVisible(true);
 					btnNewButton_6.setVisible(false);
-				}
+					textField_6.setEditable(true);
+					textField_7.setEditable(true);
+					textField_8.setEditable(true);
+					textField_9.setEditable(true);
+					textField_10.setEditable(true);
+					textField_11.setEditable(true);
+					textField_10.setVisible(false);
+					comboBox_1.setVisible(true);
+					}
 			});
 			btnNewButton_2.setBounds(423, 0, 121, 23);
 			panel.add(btnNewButton_2);
@@ -230,7 +248,8 @@ public class AdminYaoWu extends JDialog {
 		JButton btnNewButton_5 = new JButton("\u67E5\u627E");
 		btnNewButton_5.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				String sql = "select * from 药品信息表  where 名称='"+textField_3.getText()+"'";
+				int flag=0;
+				String sql = "select * from 药品信息表  where 编号='"+textField_3.getText()+"'";
 				linkDataBase link = new linkDataBase(main_Frame.getdataName(0),main_Frame.getdataPassword(0));
 				try{
 					ResultSet rs = link.getResultSet(sql);
@@ -241,21 +260,26 @@ public class AdminYaoWu extends JDialog {
 						lblNewLabel.setText("未找到该药物！");
 						}*/	
 					while(rs.next()){
-					  textField_6.setText(rs.getString(1));
-					  textField_6.setEditable(false);
-					  textField_7.setText(rs.getString(2));
-					  textField_7.setEditable(false);
-					  textField_8.setText(rs.getString(3));
-					  textField_8.setEditable(false);
-					  textField_9.setText(rs.getString(4));
-					  textField_9.setEditable(false);
-					  textField_10.setText(rs.getString(5));
-					  textField_10.setEditable(false);
+						flag=1;
+					  textField_6.setText(rs.getString(1));			
+					  textField_7.setText(rs.getString(2));					
+					  textField_8.setText(rs.getString(3));					
+					  textField_9.setText(rs.getString(4));					 
+					  textField_10.setText(rs.getString(5));					  
 					  textField_11.setText(rs.getString(6));
-					  textField_11.setEditable(false);
+					  comboBox_1.removeAllItems();
+					  comboBox_1.addItem(rs.getObject(5));
 					}
-					if(textField_6.getText().equals("")){
-					lblNewLabel.setText("未找到该药物！");
+					if(flag==0){
+			        textField_6.setText("");
+					textField_7.setText("");
+					textField_8.setText("");
+					textField_9.setText("");
+					textField_10.setText("");
+					textField_11.setText("");
+					comboBox_1.removeAllItems();
+					SetComboBox_1();
+					lblNewLabel.setText("未找到该药物！"); 
 				}
 				else{
 					lblNewLabel.setText("找到该药物！");
@@ -346,16 +370,35 @@ public class AdminYaoWu extends JDialog {
 	
 			}
 		});
-		btnNewButton_6.setBounds(213, 134, 93, 23);
+		btnNewButton_6.setBounds(198, 134, 93, 23);
 		panel_2.add(btnNewButton_6);
 		
 		btnNewButton_7 = new JButton("\u4FEE\u6539");
 		btnNewButton_7.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				if(textField_6.getText().equals("")){
+		             JOptionPane.showMessageDialog(null,"请输入正确的药品编号","提示",JOptionPane.WARNING_MESSAGE);
+		             }
+				else if(textField_7.getText().equals("")){
+		             JOptionPane.showMessageDialog(null,"请输入正确的药品名称","提示",JOptionPane.WARNING_MESSAGE);
+		             }
+		         else{
+	   String sql_3 = "update 药品信息表  set 编号='"+textField_6.getText()+"',名称='"+textField_7.getText()+"',种类='"+textField_8.getText()
+			   +"',单价='"+textField_9.getText()+"',单位='"+textField_10.getText()+"',库存量='"+textField_11.getText()+"' where 编号='"+textField_3.getText()+"'";
+		            	linkDataBase link = new linkDataBase("sa","sa");
+		                link.ExecuteQuery(sql_3);
+		                JOptionPane.showMessageDialog(null,"修改成功！","提示",JOptionPane.WARNING_MESSAGE);
+		                
+		          }
 			}
 		});
-		btnNewButton_7.setBounds(213, 134, 93, 23);
+		btnNewButton_7.setBounds(213, 134, 98, 23);
 		panel_2.add(btnNewButton_7);
+		
+		comboBox_1 = new JComboBox();
+		SetComboBox_1();
+		comboBox_1.setBounds(371, 92, 69, 21);
+		panel_2.add(comboBox_1);
 		{
 			JPanel buttonPane = new JPanel();
 			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
@@ -370,6 +413,21 @@ public class AdminYaoWu extends JDialog {
 			ResultSet rs = link.getResultSet(sql);
 			while(rs.next()){
 				comboBox.addItem(rs.getString(1));
+			}
+			rs.close();
+			link.getconnection().close();
+		}catch(Exception e4){
+			System.out.println(e4.toString());
+		}	
+	}
+	
+	private void SetComboBox_1(){
+		String sql = "select 单位 from 药品单位表 ";
+		linkDataBase link = new linkDataBase(main_Frame.getdataName(0),main_Frame.getdataPassword(0));
+		try{
+			ResultSet rs = link.getResultSet(sql);
+			while(rs.next()){
+				comboBox_1.addItem(rs.getString(1));
 			}
 			rs.close();
 			link.getconnection().close();
