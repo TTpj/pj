@@ -238,3 +238,22 @@ private JButton getJOK() {
 	 * 	
 	 * @return javax.swing.JButton	
 	 */
+private JButton getJExit() {
+		if (jExit == null) {
+			jExit = new JButton();
+			jExit.setBounds(new Rectangle(249, 200, 74, 24));
+			jExit.setText("退出");
+			jExit.addActionListener(new java.awt.event.ActionListener() {
+				public void actionPerformed(java.awt.event.ActionEvent e) {
+					dispose();
+				}
+			});
+		}
+		return jExit;
+	}
+	
+	public static String getuserName(){
+		return userName;
+	}
+
+}  
