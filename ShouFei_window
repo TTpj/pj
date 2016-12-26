@@ -54,6 +54,99 @@ public class shoufei_Window extends JDialog {
 	private DateFormat dateformat = new SimpleDateFormat("yyyyMMdd");  //  @jve:decl-index=0:
 	private Calendar clr = Calendar.getInstance();  //  @jve:decl-index=0:
 	private JButton jButton1 = null;
-         /**
+        /**
 	 * This is the default constructor
 	 */
+	public shoufei_Window() {
+		super();
+		initialize();
+	}
+
+	/**
+	 * This method initializes this
+	 * 
+	 * @return void
+	 */
+	private void initialize() {
+		Item.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent e) {
+				setJZhen_Info();
+			}
+		});
+		this.setSize(647, 446);
+		this.setContentPane(getJPanel());
+		this.setTitle("收费处");
+		this.setResizable(false);
+		this.addWindowListener(new java.awt.event.WindowAdapter() {   
+			public void windowClosing(java.awt.event.WindowEvent e) {    
+				main_Frame.sets_Statue(true);
+				dispose();
+			}
+			public void windowOpened(java.awt.event.WindowEvent e) {
+				setJZhen_Info();
+			}
+		});
+	}
+
+	/**
+	 * This method initializes jPanel	
+	 * 	
+	 * @return javax.swing.JPanel	
+	 */
+	private JPanel getJPanel() {
+		if (jPanel == null) {
+			jpname = new JLabel();
+			jpname.setBounds(new Rectangle(490, 95, 45, 23));
+			jpname.setText("姓名：");
+			jLabel5 = new JLabel();
+			jLabel5.setBounds(new Rectangle(432, 124, 47, 24));
+			jLabel5.setText("合计：");
+			jLabel4 = new JLabel();
+			jLabel4.setBounds(new Rectangle(286, 127, 73, 24));
+			jLabel4.setText("清单信息：");
+			jcno = new JLabel();
+			jcno.setBounds(new Rectangle(372, 95, 116, 23));
+			jcno.setText("处方单编号");
+			jcno.setForeground(Color.red);
+			jLabel3 = new JLabel();
+			jLabel3.setBounds(new Rectangle(286, 95, 86, 23));
+			jLabel3.setText("处方单编号：");
+			jLabel2 = new JLabel();
+			jLabel2.setBounds(new Rectangle(9, 126, 66, 25));
+			jLabel2.setText("就诊情况：");
+			jsno = new JLabel();
+			jsno.setBounds(new Rectangle(74, 94, 149, 26));
+			jsno.setText(dialog.getuserName());
+			jsno.setForeground(Color.red);
+			jLabel1 = new JLabel();
+			jLabel1.setBounds(new Rectangle(17, 95, 56, 22));
+			jLabel1.setText("工作号：");
+			jLabel = new JLabel();
+			jLabel.setText("药   品   收   费");
+			jLabel.setForeground(Color.blue);
+			jLabel.setFont(new Font("Dialog", Font.BOLD, 36));
+			jLabel.setBounds(new Rectangle(167, 21, 252, 37));
+			jPanel = new JPanel();
+			jPanel.setLayout(null);
+			jPanel.setBackground(new Color(74, 255, 208));
+			jPanel.add(jLabel, null);
+			jPanel.add(jLabel1, null);
+			jPanel.add(jsno, null);
+			jPanel.add(jLabel2, null);
+			jPanel.add(jLabel3, null);
+			jPanel.add(jcno, null);
+			jPanel.add(jLabel4, null);
+			jPanel.add(getJScrollPane(), null);
+			jPanel.add(getJScrollPane1(), null);
+			jPanel.add(getJExit(), null);
+			jPanel.add(getJOK(), null);
+			jPanel.add(jLabel5, null);
+			jPanel.add(getJcount(), null);
+			jPanel.add(jpname, null);
+			jPanel.add(getJpatientName(), null);
+			jPanel.add(getJButton(), null);
+			jPanel.add(getJButton1(), null);
+		}
+		return jPanel;
+	}
+
