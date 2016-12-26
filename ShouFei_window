@@ -54,3 +54,6 @@ public class shoufei_Window extends JDialog {
 	private DateFormat dateformat = new SimpleDateFormat("yyyyMMdd");  //  @jve:decl-index=0:
 	private Calendar clr = Calendar.getInstance();  //  @jve:decl-index=0:
 	private JButton jButton1 = null;
+         /**
+	 * This is the default constructor
+	 */
