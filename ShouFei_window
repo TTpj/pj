@@ -149,4 +149,334 @@ public class shoufei_Window extends JDialog {
 		}
 		return jPanel;
 	}
+/**
+	 * This method initializes jScrollPane	
+	 * 	
+	 * @return javax.swing.JScrollPane	
+	 */
+	private JScrollPane getJScrollPane() {
+		if (jScrollPane == null) {
+			jScrollPane = new JScrollPane();
+			jScrollPane.setBounds(new Rectangle(9, 151, 243, 192));
+			jScrollPane.setViewportView(getJzhen_Info());
+			jScrollPane.addMouseListener(new java.awt.event.MouseAdapter() {
+				public void mouseClicked(java.awt.event.MouseEvent e) {
+					if(e.getButton() == MouseEvent.BUTTON3){
+						getPopupMenu().show(e.getComponent(),e.getX(),e.getY());
+					}
+				}
+			});
+		}
+		return jScrollPane;
+	}
+
+	/**
+	 * This method initializes jScrollPane1	
+	 * 	
+	 * @return javax.swing.JScrollPane	
+	 */
+	private JScrollPane getJScrollPane1() {
+		if (jScrollPane1 == null) {
+			jScrollPane1 = new JScrollPane();
+			jScrollPane1.setBounds(new Rectangle(286, 152, 346, 195));
+			jScrollPane1.setViewportView(getJqingdan_Info());
+		}
+		return jScrollPane1;
+	}
+
+	/**
+	 * This method initializes jExit	
+	 * 	
+	 * @return javax.swing.JButton	
+	 */
+	private JButton getJExit() {
+		if (jExit == null) {
+			jExit = new JButton();
+			jExit.setBounds(new Rectangle(495, 362, 89, 28));
+			jExit.setFont(new Font("Dialog", Font.BOLD, 14));
+			jExit.setText("退 出");
+			jExit.addActionListener(new java.awt.event.ActionListener() {
+				public void actionPerformed(java.awt.event.ActionEvent e) {
+					main_Frame.sets_Statue(true);
+					dispose();
+				}
+			});
+		}
+		return jExit;
+	}
+
+	/**
+	 * This method initializes jOK	
+	 * 	
+	 * @return javax.swing.JButton	
+	 */
+	private JButton getJOK() {
+		if (jOK == null) {
+			jOK = new JButton();
+			jOK.setBounds(new Rectangle(196, 363, 90, 27));
+			jOK.setText("交 款");
+			jOK.setFont(new Font("Dialog", Font.BOLD, 14));
+			jOK.addActionListener(new java.awt.event.ActionListener() {
+				public void actionPerformed(java.awt.event.ActionEvent e) {
+					updateJZhen_Info();
+					tableModel_J.removeRow(jzhen_Info.getSelectedRow());
+					tableModel_Q.setRowCount(0);
+				}
+			});
+		}
+		return jOK;
+	}
+
+	/**
+	 * This method initializes jzhen_Info	
+	 * 	
+	 * @return javax.swing.JTable	
+	 */
+	private JTable getJzhen_Info() {
+		if (jzhen_Info == null) {
+			jzhen_Info = new JTable();
+			tableModel_J = new DefaultTableModel();
+			tableModel_J.addColumn("处方单编号");
+			tableModel_J.addColumn("病历号");
+			jzhen_Info.setModel(tableModel_J);
+			jzhen_Info.setSelectionBackground(Color.green);
+			jzhen_Info.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);	//表中只能选择一行
+			jzhen_Info.addMouseListener(new java.awt.event.MouseAdapter() {
+				public void mouseClicked(java.awt.event.MouseEvent e) {
+					if(e.getButton() == MouseEvent.BUTTON1){
+						int row = jzhen_Info.getSelectedRow();
+						jcno.setText(String.valueOf(tableModel_J.getValueAt(row, 0)).trim());
+						String sql = "select 姓名 from 病人信息表 where 病历号 = '"+tableModel_J.getValueAt(row, 1)+"'";
+						linkDataBase link = new linkDataBase(main_Frame.getdataName(2),main_Frame.getdataPassword(2));
+						ResultSet rs = link.getResultSet(sql);
+						try{
+							if(rs.next()){
+								jpatientName.setText(rs.getString(1).trim());
+							}
+						}catch(SQLException e3){
+							System.out.println("获取患者姓名失败："+e3.toString());
+						}
+						setQingDan_Info(jcno.getText().trim());
+						jcount.setText(String.valueOf(Count()));
+					}else if(e.getButton() == MouseEvent.BUTTON3){
+						getPopupMenu().show(e.getComponent(),e.getX(),e.getY());
+					}
+				}
+			});
+		}
+		return jzhen_Info;
+	}
+
+	/**
+	 * This method initializes jqingdan_Info	
+	 * 	
+	 * @return javax.swing.JTable	
+	 */
+	private JTable getJqingdan_Info() {
+		if (jqingdan_Info == null) {
+			jqingdan_Info = new JTable();
+			tableModel_Q = new DefaultTableModel();
+			tableModel_Q.addColumn("药品编号");
+			tableModel_Q.addColumn("药品名称");
+			tableModel_Q.addColumn("数量");
+			tableModel_Q.addColumn("单价");
+			jqingdan_Info.setModel(tableModel_Q);
+			
+		}
+		return jqingdan_Info;
+	}
+
+	//初始化就诊情况表，只列出没有交费的病人处方单情况
+	private void setJZhen_Info(){
+		String sql = "select 处方单编号,病历号 from 就诊信息表 where 是否交费 = '否'";
+		linkDataBase link = new linkDataBase(main_Frame.getdataName(2),main_Frame.getdataPassword(2));
+		ResultSet rs = link.getResultSet(sql);
+		tableModel_J.setRowCount(0);
+		try{
+			while(rs.next()){
+				Vector<String> vc = new Vector<String>();
+				vc.add(rs.getString(1));
+				vc.add(rs.getString(2));
+				tableModel_J.addRow(vc);
+			}
+			rs.close();
+			link.getconnection().close();
+		}catch(SQLException e){
+			System.out.println(e.toString());
+		}
+		
+	}
+	
+	//获取病人的处方清单信息
+	
+	private void setQingDan_Info(String cno){
+		linkDataBase link = new linkDataBase(main_Frame.getdataName(2),main_Frame.getdataPassword(2));
+		Connection conn = link.getconnection();
+		tableModel_Q.setRowCount(0);
+		try{
+			CallableStatement cstmt = conn.prepareCall("{call cList_info(?)}");
+			cstmt.setString(1, cno);
+			ResultSet rs = cstmt.executeQuery();
+			while(rs.next()){
+				Vector<String> vc = new Vector<String>();
+				vc.add(rs.getString(1).trim());
+				vc.add(rs.getString(2).trim());
+				vc.add(rs.getString(3).trim());
+				vc.add(rs.getString(4).trim());
+				tableModel_Q.addRow(vc);
+			}
+			rs.close();
+			cstmt.close();
+			conn.close();
+			}catch(SQLException e){
+				System.out.println(e.toString());
+				System.out.println("调用存储过程失败！");
+			}
+		}
+
+	/**
+	 * This method initializes jcount	
+	 * 	
+	 * @return javax.swing.JTextField	
+	 */
+	private JTextField getJcount() {
+		if (jcount == null) {
+			jcount = new JTextField();
+			jcount.setBounds(new Rectangle(478, 124, 150, 25));
+			jcount.setBackground(Color.white);
+			jcount.setForeground(Color.red);
+			jcount.setEditable(false);
+		}
+		return jcount;
+	}
+	
+	//计算购买药品所需的钱数
+	private float Count(){
+		float sum = 0;
+		int count = 0;		//药品数量
+		float price = 0;	//药品价格
+		for(int i = 0; i < jqingdan_Info.getRowCount(); i++){
+			count = Integer.valueOf(((String)tableModel_Q.getValueAt(i, 2)).trim());
+			price = Float.valueOf(((String)tableModel_Q.getValueAt(i, 3)).trim());
+			sum += count*price;
+		}
+		return sum;
+	}
+	
+	//更新就诊信息表，加入收费员编号以及收费状态
+	private void updateJZhen_Info(){
+		String sql = "update 就诊信息表 set 是否交费 = '是' , 收费员号 = (?) where 处方单编号 = (?)";
+		linkDataBase link = new linkDataBase(main_Frame.getdataName(2),main_Frame.getdataPassword(2));
+		Connection conn = link.getconnection();
+		try{
+			PreparedStatement pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, jsno.getText().trim());
+			pstmt.setString(2, jcno.getText().trim());
+			pstmt.executeUpdate();
+			JOptionPane.showMessageDialog(null,"交款成功！","提示！",JOptionPane.INFORMATION_MESSAGE);
+			pstmt.close();
+			conn.close();
+		}catch(SQLException e){
+			JOptionPane.showMessageDialog(null,"交款失败，请重新交款！","提示！",JOptionPane.INFORMATION_MESSAGE);
+			System.out.println("更新就诊信息表失败:"+e.toString());
+		}
+	}
+	
+	//建立一个弹出式菜单
+	private JPopupMenu getPopupMenu(){
+		JPopupMenu popmenu = new JPopupMenu();
+		popmenu.add(Item);
+		return popmenu;
+	}
+
+	/**
+	 * This method initializes jpatientName	
+	 * 	
+	 * @return javax.swing.JTextField	
+	 */
+	private JTextField getJpatientName() {
+		if (jpatientName == null) {
+			jpatientName = new JTextField();
+			jpatientName.setBounds(new Rectangle(539, 93, 85, 27));
+			jpatientName.setEditable(false);
+		}
+		return jpatientName;
+	}
+
+	/**
+	 * This method initializes jButton	
+	 * 	
+	 * @return javax.swing.JButton	
+	 */
+	private JButton getJButton() {
+		if (jButton == null) {
+			jButton = new JButton();
+			jButton.setBounds(new Rectangle(44, 362, 99, 28));
+			jButton.setFont(new Font("Dialog", Font.BOLD, 14));
+			jButton.setText("定期清理");
+			jButton.addActionListener(new java.awt.event.ActionListener() {
+				public void actionPerformed(java.awt.event.ActionEvent e) {
+					System.out.println("定期清理数据库中的的冗余信息！");
+					System.out.println(dateformat.format(clr.getTime()));
+					clr.add(Calendar.DAY_OF_MONTH,-3);		//设置三天前的日期
+					System.out.println(dateformat.format(clr.getTime()));
+					String sql = "select 药品编号,sum(数量) from 就诊信息表,处方清单表 where 就诊信息表.处方单编号= 处方清单表.处方单编号 " +
+								"and 就诊日期 <= (?) and 是否交费 = '否' group by 药品编号";
+					String sql2 = "update 药品信息表 set 库存量 = 库存量 + (?) where 编号 = (?)";
+					String sql3 = "delete from 就诊信息表 where 就诊日期 <= (?) and 是否交费 = '否'";
+					linkDataBase link = new linkDataBase(main_Frame.getdataName(2),main_Frame.getdataPassword(2));
+					try{
+						PreparedStatement pstmt = link.getconnection().prepareStatement(sql);
+						PreparedStatement pstmt2 = link.getconnection().prepareStatement(sql2);
+						PreparedStatement pstmt3 = link.getconnection().prepareStatement(sql3);
+						pstmt.setString(1, dateformat.format(clr.getTime()));
+						pstmt3.setString(1,dateformat.format(clr.getTime()));
+						ResultSet rs = pstmt.executeQuery();
+						while(rs.next()){
+							pstmt2.setString(1, rs.getString(2).trim());
+							pstmt2.setString(2, rs.getString(1).trim());
+							pstmt2.executeUpdate();			//将没有在药房取药的过期记录所减药品数返回到库存量
+						}
+						pstmt3.execute();					//最后清除这些过期记录
+						pstmt.close();
+						pstmt2.close();
+						pstmt3.close();
+						link.getconnection().close();
+						JOptionPane.showMessageDialog(null, "清除成功！","提示！",JOptionPane.INFORMATION_MESSAGE);
+						setJZhen_Info();
+					}catch(SQLException ee){
+						System.out.println("清理数据库:"+ee.toString());
+					}
+				}
+			});
+		}
+		return jButton;
+	}
+
+	/**
+	 * This method initializes jButton1	
+	 * 	
+	 * @return javax.swing.JButton	
+	 */
+	private JButton getJButton1() {
+		if (jButton1 == null) {
+			jButton1 = new JButton();
+			jButton1.setBounds(new Rectangle(337, 362, 102, 28));
+			jButton1.setFont(new Font("Dialog", Font.BOLD, 14));
+			jButton1.setText("打印清单");
+			jButton1.addActionListener(new java.awt.event.ActionListener() {
+				public void actionPerformed(java.awt.event.ActionEvent e) {
+					System.out.println("打印药品清单！");
+					try{
+						jqingdan_Info.print(PrintMode.NORMAL,null,null,true,null,true);
+					}catch(Exception ee){
+						System.out.println("打印机出错："+ee.toString());
+					}
+				}
+			});
+		}
+		return jButton1;
+	}
+} 
+
 
