@@ -150,9 +150,27 @@ public class AdminKeShi extends JDialog{
 		JButton btnNewButton_3 = new JButton("\u63D0\u4EA4");
 		btnNewButton_3.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+			 String sql_0 = "select 科室名 from 科室信息表 ";
+			 int flag=0;
+			 linkDataBase link_0 = new linkDataBase("sa","sa");
+			 ResultSet rs_0 = link_0.getResultSet(sql_0);
+			 try {
+				while(rs_0.next()){
+					if(rs_0.getString(1).indexOf(textField.getText().toString())>=0){
+						flag=1;
+					}
+				 }
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			
              if(textField.getText().equals("")){
              JOptionPane.showMessageDialog(null,"请输入正确的科室名称","提示",JOptionPane.WARNING_MESSAGE);
              }
+            else if(flag==1){
+                 JOptionPane.showMessageDialog(null,"科室已经存在","提示",JOptionPane.WARNING_MESSAGE);
+                 }
              else{
             	 String sql = "insert into 科室信息表(科室名,地址,电话) values('"+textField.getText()+"','"+textField_1.getText()+"','"+textField_2.getText()+"')";
             	 linkDataBase link = new linkDataBase("sa","sa");
@@ -165,6 +183,7 @@ public class AdminKeShi extends JDialog{
              }
 			}
 		});
+		
 		btnNewButton_3.setBounds(351, 11, 93, 23);
 		panel_1.add(btnNewButton_3);
 		

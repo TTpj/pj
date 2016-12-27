@@ -13,6 +13,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.Color;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.awt.event.ItemListener;
 import java.awt.event.ItemEvent;
 import javax.swing.JTextArea;
@@ -80,6 +81,7 @@ public class AdminYaoWu extends JDialog {
 			btnNewButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					panel_1.setVisible(true);
+					panel_2.setVisible(false);
 				}
 			});
 			btnNewButton.setBounds(0, 0, 130, 23);
@@ -88,6 +90,7 @@ public class AdminYaoWu extends JDialog {
 			JButton btnNewButton_1 = new JButton("\u5220\u9664\u836F\u54C1\u4FE1\u606F");
 			btnNewButton_1.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
+					panel_1.setVisible(false);
 					panel_2.setVisible(true);
 					btnNewButton_7.setVisible(false);
 					btnNewButton_6.setVisible(true);
@@ -107,6 +110,7 @@ public class AdminYaoWu extends JDialog {
 			JButton btnNewButton_2 = new JButton("\u4FEE\u6539\u836F\u54C1\u4FE1\u606F");
 			btnNewButton_2.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
+					panel_1.setVisible(false);
 					panel_2.setVisible(true);
 					btnNewButton_7.setVisible(true);
 					btnNewButton_6.setVisible(false);
@@ -198,8 +202,25 @@ public class AdminYaoWu extends JDialog {
 		JButton btnNewButton_3 = new JButton("\u63D0\u4EA4");
 		btnNewButton_3.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				 String sql_0 = "select 编号 from 药品信息表";
+				 int flag=0;
+				 linkDataBase link_0 = new linkDataBase("sa","sa");
+				 ResultSet rs_0 = link_0.getResultSet(sql_0);
+				 try {
+					while(rs_0.next()){
+						if(rs_0.getString(1).indexOf(textField.getText().toString())>=0){
+							flag=1;
+						}
+					 }
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 				if(textField.getText().equals("")){
 		             JOptionPane.showMessageDialog(null,"请输入正确的药品编号","提示",JOptionPane.WARNING_MESSAGE);
+		             }
+				else if(flag==1){
+		             JOptionPane.showMessageDialog(null,"药品已经存在","提示",JOptionPane.WARNING_MESSAGE);
 		             }
 				else if(textField_1.getText().equals("")){
 		             JOptionPane.showMessageDialog(null,"请输入正确的药品名称","提示",JOptionPane.WARNING_MESSAGE);
